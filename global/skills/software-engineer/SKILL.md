@@ -40,6 +40,9 @@ You can still call those from inside this loop — this skill just sequences the
   [[design-plan-review]] (UX) before writing code.
 - **Get the plan agreed before implementing** when the change is risky,
   ambiguous, or large. The plan is the only artifact in this step.
+- **Plan on Opus; execute on Sonnet.** Once the plan is agreed, either delegate
+  the build to the `software-engineer` subagent (Sonnet) or `/model sonnet`, then
+  return to Opus for the step-5 review. See "Model tiering" in the global CLAUDE.md.
 
 ### 3. Implement in small, reviewable steps
 - Follow the existing style, naming, and patterns of the file you're editing.

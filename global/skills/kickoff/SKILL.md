@@ -85,7 +85,10 @@ For each question:
 
 - Give 2–4 concrete options. Put your **recommended** option first and mark it
   `(Recommended)`.
-- Put the **pros/cons / tradeoffs** of each option in its description.
+- Put the **pros/cons / tradeoffs** of each option in its description, and follow
+  the **Decision-brief format** from the global CLAUDE.md: each option carries
+  `Completeness: X/10`, dual effort `(human: ~… / AI: ~…)`, and a `[one-way]` or
+  `[two-way]` tag. Gate `[one-way]` choices behind a clear confirmation.
 - When comparing concrete code shapes, file layouts, or architectures, use the
   option **`preview`** field to show a short side-by-side sketch.
 
