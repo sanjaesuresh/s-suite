@@ -6,7 +6,7 @@ into a *team of specialists* — product, engineering, design, security, QA, and
 release — instead of one generic assistant.
 
 It is designed to be **safe**, **reusable**, and **work-safe**: usable on
-personal projects and inside an employer environment (e.g. Bloomberg) **without
+personal projects and inside a corporate/employer environment **without
 encoding any proprietary information**.
 
 ## What this is
@@ -15,6 +15,119 @@ encoding any proprietary information**.
 - **Project-specific** context stays in each repo's own `CLAUDE.md` / `.claude/`.
 - **Local/private** settings (`settings.local.json`, credentials, saved context)
   are never committed and never synced into this repo.
+
+Invoke anything by `/name`, or just describe the task — every description is
+written so Claude auto-invokes the right one.
+
+> **Lean defaults:** 7 rarely-used/redundant skills ship **off** to save context
+> tokens (marked ⊘ below). They're not deleted — flip them on in
+> `settings.json` under `skillOverrides` (`"office-hours": "on"`) when you want them.
+
+## Skills (25)
+
+**Plan & scope**
+
+| Skill | What it does |
+|---|---|
+| `/kickoff` | Front door for new work: ticket/feature → branch (work) → investigate the codebase → ask only the decision-altering questions (with pros/cons) → scoped plan. No code. |
+| `/office-hours` | Challenge a product idea like a founder-mentor before any planning. |
+| `/spec` ⊘ | Turn vague intent into a precise, executable spec with a clear definition of done. |
+| `/implementation-plan` ⊘ | Research the area and produce a scoped plan (lighter than `kickoff`; no branch/ticket flow). |
+| `/product-plan-review` ⊘ | Review a feature plan through a product/founder lens (expand / hold / cut). |
+| `/engineering-plan-review` | Review a plan like an eng manager: architecture, failure modes, tests, rollout. |
+| `/design-plan-review` | Review a UX/frontend plan; scorecard + what a 10/10 looks like. |
+| `/plan-pipeline` | Run a plan through eng + design (+ scope/migration) reviews in one pass; auto-decide routine calls, surface only taste decisions. |
+
+**Build**
+
+| Skill | What it does |
+|---|---|
+| `/software-engineer` | The default build/fix loop: understand → plan → implement in small steps → verify with evidence → self-review. Orchestrates the specialists. |
+
+**Review & audit** (read-only)
+
+| Skill | What it does |
+|---|---|
+| `/pre-pr-review` | Strict, skeptical review of your current diff before opening a PR. |
+| `/deep-codebase-audit` ⊘ | Multi-agent deep audit of a repo, feature, folder, or diff. |
+| `/test-gap-analysis` ⊘ | Find missing, weak, or misleading tests in code or a diff. |
+| `/ai-slop-cleanup` ⊘ | Find (and optionally fix) AI slop, overengineering, dead code, fake robustness. |
+| `/pr-description` | Generate a PR description grounded in the real diff + validation performed. |
+
+**Debug & refactor**
+
+| Skill | What it does |
+|---|---|
+| `/debugging-incident-review` | Investigate a bug/incident methodically — root cause before any fix. |
+| `/safe-refactor-plan` | Plan a refactor safely: tests first, small commits, rollback path. |
+
+**Understand & document**
+
+| Skill | What it does |
+|---|---|
+| `/learn-codebase` | Deep-dive a part of THIS codebase and teach it from real code and call flows. |
+| `/onboarding-map` ⊘ | Generate an onboarding map for an unfamiliar repo. |
+| `/docs-generate` | Generate/update docs from actual code (Diataxis: tutorial / how-to / reference / explanation). |
+| `/health-check` | Run/propose lint, typecheck, tests, build, dead-code, dependency checks; score + top fixes. |
+
+**Safety & session**
+
+| Skill | What it does |
+|---|---|
+| `/careful` | Warn + confirm before destructive shell commands this session. |
+| `/freeze <path>` | Restrict edits to one directory/path this session. |
+| `/guard <path>` | `careful` + `freeze` together (max safety). |
+| `/context-save` | Save task, decisions, git state, and remaining work to a project-local file. |
+| `/context-restore` | Restore saved context and reconcile it with the current git state. |
+
+## Agents (18)
+
+Subagents you (or a skill) can delegate to. **All are read-only except
+`software-engineer`**, which is the only one with edit/write tools. The
+deeper-reasoning agents run on `opus`; the rest on `sonnet`.
+
+**Implementer (write-capable)**
+
+| Agent | What it does |
+|---|---|
+| `software-engineer` ⚙️ | Delegatable implementer for a well-scoped build/fix, end to end. The **only** agent that can edit files. Never commits or pushes unless you explicitly ask. |
+
+**Product & design**
+
+| Agent | What it does |
+|---|---|
+| `founder-reviewer` | Challenge a product idea like a founder/CEO; find the stronger and the smallest useful version. |
+| `product-strategist` | Turn a vague idea into a user problem, positioning, requirements, and MVP scope. |
+| `design-reviewer` | Review UI/UX plans or frontend diffs; scorecard across hierarchy, a11y, states, consistency. |
+
+**Engineering review**
+
+| Agent | What it does |
+|---|---|
+| `engineering-manager` | Review a plan for architecture, data flow, edge cases, state transitions, tests, delivery risk. |
+| `architecture-reviewer` | Review module boundaries, dependency direction, abstractions, naming, pattern fit. |
+| `pre-pr-reviewer` | Strict PR-readiness second opinion on a diff. |
+| `scope-guardian` | Review a diff for scope creep; classify each change; suggest a PR split. |
+| `ai-slop-detector` | Flag AI slop, overengineering, dead code, fake error handling, style inconsistency. |
+| `test-strategist` | Find missing tests; propose unit/integration/regression/edge-case tests. |
+
+**Risk & ops**
+
+| Agent | What it does |
+|---|---|
+| `security-reviewer` | Review for security/privacy/auth/injection/secrets risks (OWASP + STRIDE thinking). |
+| `migration-risk-reviewer` | Review DB/schema/config/API migrations for rollout, rollback, and compatibility risk. |
+| `release-manager` | Go/no-go ship readiness: git state, tests, docs, rollout, rollback, monitoring. |
+| `qa-reviewer` | Build manual test plans, edge-case plans, and regression plans. |
+| `health-checker` | Run/recommend health checks; produce a score and prioritized fixes. |
+
+**Understand & debug**
+
+| Agent | What it does |
+|---|---|
+| `codebase-teacher` | Explore the repo and teach a feature/subsystem from real code. |
+| `debugger` | Investigate bugs via a hypothesis tree — no fixes without investigation. |
+| `docs-reader` | Answer project questions from docs/tests; flag where docs and code diverge. |
 
 ## Inspiration (not a dependency)
 
@@ -27,7 +140,7 @@ checks, and Diataxis docs.
 This toolkit **does not depend on gstack** and does not clone it. It is simpler,
 private, and hardened for work use:
 
-- ~24 skills + ~18 agents, all plain markdown — no external binaries, no telemetry,
+- ~25 skills + ~18 agents, all plain markdown — no external binaries, no telemetry,
   no analytics directory, no required browser automation.
 - Every reusable file is generic; nothing proprietary is ever persisted globally.
 - Safety hooks are minimal and "careful, not annoying" (confirm, don't block).
@@ -44,7 +157,7 @@ claude-code-toolkit/
   global/                          # installs into ~/.claude
     CLAUDE.md                      # global operating instructions
     settings.json                  # safe starter settings + hooks
-    skills/<name>/SKILL.md         # 24 reusable skills
+    skills/<name>/SKILL.md         # 25 reusable skills
     agents/<name>.md               # 18 reusable subagents
   templates/                       # examples to copy into real repos
     project-claude.md              # example project CLAUDE.md
@@ -128,9 +241,9 @@ read-only reviewers. Active `freeze`/`careful` hooks still apply to it.
 |---|---|---|
 | `/kickoff` | Tech lead | Ticket/feature → branch → investigate → ask only what matters → plan |
 | `/office-hours` | Founder/mentor | Challenge a product idea before building |
-| `/spec` | — | Turn vague intent into a precise, executable spec |
-| `/implementation-plan` | — | Scoped plan + risks before any code |
-| `/product-plan-review` | Product/founder | Review a feature plan (expand / hold / cut) |
+| `/spec` ⊘ | — | Turn vague intent into a precise, executable spec |
+| `/implementation-plan` ⊘ | — | Scoped plan + risks before any code |
+| `/product-plan-review` ⊘ | Product/founder | Review a feature plan (expand / hold / cut) |
 | `/engineering-plan-review` | Eng manager | Architecture, failure modes, tests, rollout |
 | `/design-plan-review` | Designer-coder | Score a UX plan, find the 10/10 |
 
@@ -221,7 +334,7 @@ for work repos.
 - Use `templates/project-claude.md` and `templates/project-settings.json` as
   starting points for a new repo.
 
-## Work / Bloomberg safety rules
+## Work / employer safety rules
 
 Read this before using the toolkit at work.
 
