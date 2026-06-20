@@ -1,5 +1,17 @@
 {
   "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "autoCompactEnabled": true,
+  "maxSkillDescriptionChars": 300,
+  "skillListingBudgetFraction": 0.1,
+  "skillOverrides": {
+    "spec": "off",
+    "deep-codebase-audit": "off",
+    "implementation-plan": "off",
+    "product-plan-review": "off",
+    "onboarding-map": "off",
+    "test-gap-analysis": "off",
+    "ai-slop-cleanup": "off"
+  },
   "permissions": {
     "ask": [
       "Bash(git push:*)",
