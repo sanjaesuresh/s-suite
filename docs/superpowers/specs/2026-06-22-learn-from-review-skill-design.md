@@ -60,21 +60,40 @@ Out of scope:
 5. **Propose the edit (decision brief).** Show the target file, the exact
    before/after, and a one-line rationale. Because this edits durable global
    files, require explicit user confirmation before writing.
-6. **Apply + record.** Make the approved edit, then append a one-line dated
-   entry to `global/LESSONS.md`. The ledger is the audit trail and the dedup
-   guard: before adding a new lesson, scan it so the same lesson is not
-   re-learned. Each entry links to the file the lesson changed.
+6. **Apply + record.** Make the approved edit, then prepend an entry to
+   `global/LESSONS.md`. Gather metadata at this point: branch name
+   (`git rev-parse --abbrev-ref HEAD`), timestamp (`date '+%Y-%m-%d %H:%M %Z'`),
+   PR number if known, and the sanitized comment quote. The ledger is the audit
+   trail and the dedup guard: before adding, scan existing **Root cause / class**
+   lines so the same lesson is not re-learned. Each entry names the file the
+   lesson changed.
 
 ## `global/LESSONS.md` format
 
-A reverse-chronological list. One line per lesson:
+A reverse-chronological list of entries, newest first. Each entry is a block
+capturing enough context to understand the lesson later without re-reading the
+PR. The skill gathers the metadata at apply-time (`git rev-parse --abbrev-ref
+HEAD` for branch, `date '+%Y-%m-%d %H:%M %Z'` for the timestamp).
 
 ```
-- YYYY-MM-DD — <one-line class of mistake> → <file changed> (PR #N if known)
+### YYYY-MM-DD HH:MM TZ — <one-line class of mistake>
+
+- **Branch:** <branch name the review was on>
+- **PR:** #N (or "n/a" if not from a numbered PR)
+- **Comment:** <the review comment, sanitized — verbatim quote, trimmed>
+- **Root cause / class:** <the generalized mistake, one sentence>
+- **Fix applied to toolkit:** <file changed> — <one-line what changed>
 ```
 
-A short header explains the file's purpose and that the `learn-from-review`
-skill maintains it.
+Fields are sanitized by the step-4 gate before they are written: the quoted
+comment and branch name must not leak work-specific identifiers (repo/service
+names, internal URLs, secrets). If a field would leak, it is generalized or
+redacted rather than dropped silently.
+
+A short header at the top of the file explains its purpose and that the
+`learn-from-review` skill maintains it. The header also notes that the
+**Root cause / class** lines are the dedup key — step 6 scans them before
+adding a new entry.
 
 ## Error handling / edge cases
 
