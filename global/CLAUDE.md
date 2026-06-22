@@ -28,6 +28,22 @@ These are my durable, cross-project instructions. A project's own
 - These instructions still win on conflict: an explicit user request or a
   project `CLAUDE.md` overrides any skill.
 
+### Routing between overlapping skills
+
+When more than one skill could fire, these win:
+
+- **Build a feature / fix a bug (default):** `software-engineer`. It already
+  bakes in test-first and verify-before-done — do **not** invoke
+  `test-driven-development` or `verification-before-completion` separately
+  (both are off).
+- **Execute a written plan with mostly-independent tasks:** `subagent-driven-development`.
+- **Write a multi-step plan artifact:** `writing-plans`. Not `implementation-plan`
+  or `spec` (both off) — invoke `spec` only when "definition of done" is the hard
+  part; you rarely need spec *and* a plan.
+- **Start ticket/feature work:** `kickoff` (investigate, scope, branch), then `writing-plans`.
+- **Debug a root cause:** `systematic-debugging` (not `debugging-incident-review`, off).
+- **Ship:** `pre-pr-review` → `finishing-a-development-branch` → `pr-description`.
+
 ## Conserve context — delegate exploration to subagents
 
 - For broad or multi-file searches and codebase exploration, dispatch a subagent

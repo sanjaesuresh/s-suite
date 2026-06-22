@@ -13,7 +13,11 @@
     "product-plan-review": "off",
     "onboarding-map": "off",
     "test-gap-analysis": "off",
-    "ai-slop-cleanup": "off"
+    "ai-slop-cleanup": "off",
+    "debugging-incident-review": "off",
+    "test-driven-development": "off",
+    "verification-before-completion": "off",
+    "executing-plans": "off"
   },
   "permissions": {
     "defaultMode": "dontAsk",
