@@ -166,3 +166,12 @@ Run read-only and routine git freely (`status`, `diff`, `log`, `add`, `commit`,
 before anything that destroys work or is hard to reverse: `push` (any form),
 `git rm`, `git clean`, `git reset --hard`, `git restore`, `git checkout -- <file>`,
 `git branch -D`, `git worktree remove`. When in doubt, ask.
+
+**Approval to push (or any ask-first action) is per-time and non-transferable.**
+It covers only the exact action approved at that moment — it does not carry
+across turns, interruptions, or a changed set of commits. A rejected or
+interrupted privileged tool call means *denied*, not *later*: do not re-attempt
+without a fresh, explicit request, and treat the interrupting message as the new
+instruction. If commits were added or changed since approval was given, the
+approval is stale — re-ask. Before pushing, name what goes out: which commits, to
+which remote/branch.
