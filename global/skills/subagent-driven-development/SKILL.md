@@ -9,7 +9,7 @@ Execute plan by dispatching a fresh implementer subagent per task, a task review
 
 **Why subagents:** You delegate tasks to specialized agents with isolated context. By precisely crafting their instructions and context, you ensure they stay focused and succeed at their task. They should never inherit your session's context or history — you construct exactly what they need. This also preserves your own context for coordination work.
 
-**Core principle:** Fresh subagent per task + task review (spec + quality) + broad final review = high quality, fast iteration
+**Core principle:** Fresh subagent per task + task review (spec + quality) + broad final review = high quality, fast iteration. Tasks whose work provably doesn't collide run as a parallel wave; everything else runs sequentially.
 
 **Narration:** between tool calls, narrate at most one short line — the
 ledger and the tool results carry the record.
@@ -49,7 +49,7 @@ digraph process {
     rankdir=TB;
 
     subgraph cluster_per_task {
-        label="Per Task";
+        label="Per Task (each wave member, as its report arrives)";
         "Dispatch implementer subagent (./implementer-prompt.md)" [shape=box];
         "Implementer subagent asks questions?" [shape=diamond];
         "Answer questions, provide context" [shape=box];
@@ -61,11 +61,13 @@ digraph process {
     }
 
     "Read plan, note context and global constraints, create todos" [shape=box];
-    "More tasks remain?" [shape=diamond];
+    "Group tasks into waves (pre-flight: disjoint files, no dependencies)" [shape=box];
+    "More waves remain?" [shape=diamond];
     "Dispatch final code reviewer subagent (pre-pr-review skill)" [shape=box];
     "Use finishing-a-development-branch" [shape=box style=filled fillcolor=lightgreen];
 
-    "Read plan, note context and global constraints, create todos" -> "Dispatch implementer subagent (./implementer-prompt.md)";
+    "Read plan, note context and global constraints, create todos" -> "Group tasks into waves (pre-flight: disjoint files, no dependencies)";
+    "Group tasks into waves (pre-flight: disjoint files, no dependencies)" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="record wave base, dispatch wave (parallel if >1 task)"];
     "Dispatch implementer subagent (./implementer-prompt.md)" -> "Implementer subagent asks questions?";
     "Implementer subagent asks questions?" -> "Answer questions, provide context" [label="yes"];
     "Answer questions, provide context" -> "Dispatch implementer subagent (./implementer-prompt.md)";
@@ -75,12 +77,16 @@ digraph process {
     "Task reviewer reports spec ✅ and quality approved?" -> "Dispatch fix subagent for Critical/Important findings" [label="no"];
     "Dispatch fix subagent for Critical/Important findings" -> "Write diff file, dispatch task reviewer subagent (./task-reviewer-prompt.md)" [label="re-review"];
     "Task reviewer reports spec ✅ and quality approved?" -> "Mark task complete in todo list and progress ledger" [label="yes"];
-    "Mark task complete in todo list and progress ledger" -> "More tasks remain?";
-    "More tasks remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes"];
-    "More tasks remain?" -> "Dispatch final code reviewer subagent (pre-pr-review skill)" [label="no"];
+    "Mark task complete in todo list and progress ledger" -> "More waves remain?" [label="wave done when every member's review is clean"];
+    "More waves remain?" -> "Dispatch implementer subagent (./implementer-prompt.md)" [label="yes - next wave"];
+    "More waves remain?" -> "Dispatch final code reviewer subagent (pre-pr-review skill)" [label="no"];
     "Dispatch final code reviewer subagent (pre-pr-review skill)" -> "Use finishing-a-development-branch";
 }
 ```
+
+A wave with one task is exactly the sequential flow. A wave with several
+dispatches all its implementers in a single message and runs the per-task
+loop for each member as its report arrives — see Parallel Waves below.
 
 ## Pre-Flight Plan Review
 
@@ -95,6 +101,55 @@ each finding beside the plan text that mandates it, asking which governs —
 before execution begins, not one interrupt per discovery mid-plan. If the
 scan is clean, proceed without comment. The review loop remains the net for
 conflicts that only emerge from implementation.
+
+In the same pass, plan the waves. For each task, list the files the plan
+says it creates or modifies (including tests), and draw a dependency edge
+when a task consumes an interface, type, or artifact another task produces,
+or the plan orders them explicitly. Two tasks may share a wave only when
+ALL of these hold:
+
+- neither depends on the other, directly or transitively
+- their predicted file sets are disjoint — counting test files, fixtures,
+  migrations, and shared registries (a package manifest, a route table, an
+  exports barrel, a lockfile is a file both tasks touch)
+- they don't compete for a resource outside git: the same dev-server port,
+  the same database, the same code-generation step
+
+Disjointness must be provable from the plan's text. If the plan doesn't
+name a task's files precisely enough to prove it, that task runs alone —
+sequential is the default; parallel must be earned. Write the wave plan
+(wave number → task numbers → each task's file list) into the progress
+ledger before dispatching Wave 1.
+
+## Parallel Waves
+
+Tasks grouped into the same wave run as concurrent implementer subagents in
+the same working tree, committing to the same branch. Mechanics:
+
+- Record the wave base once (`git rev-parse HEAD`) before dispatching.
+  Every task in the wave shares this BASE.
+- Dispatch all the wave's implementers in a single message (multiple Agent
+  calls in one block). Each dispatch carries its own brief and report
+  paths, plus — because siblings share the tree — the File Boundary block
+  from implementer-prompt.md naming exactly the files that task may touch.
+- Interleaved commits on the branch are expected. Generate each task's
+  review package scoped to its files:
+  `scripts/review-package WAVE_BASE HEAD -- <task's files>` — the pathspec
+  keeps sibling commits and hunks out of this task's review.
+- Handle each implementer's report as it arrives: boundary check, review
+  package, task reviewer. Wave siblings' reviews may also run in parallel,
+  and fix subagents inherit the same file boundary as their task.
+- **Boundary check before review:** `git show --stat` each commit the
+  implementer reports; every file must be inside the task's declared list.
+  A strayed commit is a collision — warn the reviewers of every affected
+  task that their diffs may contain foreign hunks, and run whatever those
+  tasks still need (fixes, re-reviews) sequentially.
+- One member reporting BLOCKED or NEEDS_CONTEXT does not stop its
+  siblings. Resolve it per Handling Implementer Status; the task re-runs
+  solo or joins a later wave once unblocked.
+- A wave is complete only when every member's review is clean. Do not
+  start the next wave early — its tasks may depend on this wave's
+  interfaces.
 
 ## Model Selection
 
@@ -185,7 +240,10 @@ final whole-branch review. When you fill a reviewer template:
   file). The output never enters your own context, and the reviewer sees
   the commit list, stat summary, and full diff with context in one Read
   call. Use the BASE you recorded before dispatching the implementer —
-  never `HEAD~1`, which silently truncates multi-commit tasks.
+  never `HEAD~1`, which silently truncates multi-commit tasks. For a task
+  that ran in a parallel wave, scope the package to the task's files:
+  `scripts/review-package WAVE_BASE HEAD -- <task's files>` — an unscoped
+  range would hand the reviewer its siblings' work as part of the diff.
 - A dispatch prompt describes one task, not the session's history. Do not
   paste accumulated prior-task summaries ("state after Tasks 1-3") into
   later dispatches — a real session's dispatch hit 42k chars of which 99%
@@ -253,7 +311,11 @@ a ledger file, not only in todos.
 - At skill start, check for a ledger:
   `cat "$(git rev-parse --show-toplevel)/.superpowers/sdd/progress.md"`. Tasks listed there
   as complete are DONE — do not re-dispatch them; resume at the first task
-  not marked complete.
+  not marked complete. If the ledger holds a wave plan, resume mid-wave:
+  re-dispatch only the wave members not marked complete.
+- The wave plan (wave → tasks → file lists) lives in the ledger too,
+  written during pre-flight — after compaction it is the only record of
+  which tasks were cleared to run together and what files each may touch.
 - When a task's review comes back clean, append one line to the ledger in
   the same message as your other bookkeeping:
   `Task N: complete (commits <base7>..<head7>, review clean)`.
@@ -323,6 +385,21 @@ Task reviewer: Spec ✅. Task quality: Approved.
 
 [Mark Task 2 complete]
 
+Wave 3 — Tasks 3 & 4 (pre-flight proved them disjoint: Task 3 touches
+src/api/ only, Task 4 touches src/cli/ only, no dependency between them)
+
+[Record wave base; dispatch both implementers in ONE message, each with its
+ File Boundary block]
+
+Task 3 implementer: DONE — 6/6 passing, committed
+[Boundary check ✅; review-package WAVE_BASE HEAD -- src/api/; dispatch reviewer]
+Task 4 implementer: DONE — 4/4 passing, committed
+[Boundary check ✅; review-package WAVE_BASE HEAD -- src/cli/; dispatch reviewer]
+
+Task 3 reviewer: Spec ✅. Approved.   Task 4 reviewer: Spec ✅. Approved.
+
+[Mark Tasks 3 and 4 complete — Wave 3 done, next wave may now start]
+
 ...
 
 [After all tasks]
@@ -346,6 +423,8 @@ Done!
 - Review checkpoints automatic
 
 **Efficiency gains:**
+- Independent tasks run as parallel waves — wall-clock scales with the
+  number of waves, not the number of tasks
 - Controller curates exactly what context is needed; bulk artifacts move
   as files, not pasted text
 - Subagent gets complete information upfront
@@ -370,7 +449,12 @@ Done!
 - Start implementation on main/master branch without explicit user consent
 - Skip task review, or accept a report missing either verdict (spec compliance AND task quality are both required)
 - Proceed with unfixed issues
-- Dispatch multiple implementation subagents in parallel (conflicts)
+- Dispatch implementers in parallel without a pre-flight wave plan proving
+  their file sets disjoint — overlap, an unproven file list, or a
+  dependency between them means sequential
+- Dispatch a wave implementer without the File Boundary block, or accept a
+  wave commit staged with `git add -A` / `git add .` / `git commit -a`
+- Start the next wave while any current-wave member has an open review
 - Make a subagent read the whole plan file (hand it its task brief —
   `scripts/task-brief` — instead)
 - Skip scene-setting context (subagent needs to understand where task fits)

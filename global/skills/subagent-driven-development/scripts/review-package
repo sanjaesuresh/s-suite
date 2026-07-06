@@ -4,41 +4,77 @@
 # call. Using the recorded per-task BASE (not HEAD~1) keeps multi-commit
 # tasks intact.
 #
-# Usage: review-package BASE HEAD [OUTFILE]
+# Usage: review-package BASE HEAD [OUTFILE] [-- PATHSPEC...]
 # Default OUTFILE: <repo-root>/.superpowers/sdd/review-<base7>..<head7>.diff
 # (named per range, so a re-review after fixes gets a distinct fresh file).
+#
+# PATHSPEC (after --) limits the package to the named paths. Use it for a
+# task that ran in a parallel wave: BASE..HEAD then contains sibling tasks'
+# interleaved commits, and the pathspec keeps their work out of this task's
+# review. With a pathspec and no OUTFILE, the default name gains a suffix
+# derived from the first path so sibling packages don't overwrite each other.
 set -euo pipefail
 
-if [ $# -lt 2 ] || [ $# -gt 3 ]; then
-  echo "usage: review-package BASE HEAD [OUTFILE]" >&2
+paths=()
+args=()
+seen_dashdash=0
+for a in "$@"; do
+  if [ "$seen_dashdash" -eq 1 ]; then
+    paths+=("$a")
+  elif [ "$a" = "--" ]; then
+    seen_dashdash=1
+  else
+    args+=("$a")
+  fi
+done
+
+if [ ${#args[@]} -lt 2 ] || [ ${#args[@]} -gt 3 ]; then
+  echo "usage: review-package BASE HEAD [OUTFILE] [-- PATHSPEC...]" >&2
   exit 2
 fi
 
-base=$1
-head=$2
+base=${args[0]}
+head=${args[1]}
 
 git rev-parse --verify --quiet "$base" >/dev/null || { echo "bad BASE: $base" >&2; exit 2; }
 git rev-parse --verify --quiet "$head" >/dev/null || { echo "bad HEAD: $head" >&2; exit 2; }
 
-if [ $# -eq 3 ]; then
-  out=$3
+if [ ${#args[@]} -eq 3 ]; then
+  out=${args[2]}
 else
   dir=$("$(cd "$(dirname "$0")" && pwd)/sdd-workspace")
-  out="$dir/review-$(git rev-parse --short "$base")..$(git rev-parse --short "$head").diff"
+  out="$dir/review-$(git rev-parse --short "$base")..$(git rev-parse --short "$head")"
+  if [ ${#paths[@]} -gt 0 ]; then
+    slug=$(printf '%s' "${paths[0]}" | tr -c 'A-Za-z0-9._' '-')
+    out="$out-$slug"
+  fi
+  out="$out.diff"
 fi
+
+# git <subcommand args...> over the range, with the pathspec when one was given
+git_range() {
+  if [ ${#paths[@]} -gt 0 ]; then
+    git "$@" "${base}..${head}" -- "${paths[@]}"
+  else
+    git "$@" "${base}..${head}"
+  fi
+}
 
 {
   echo "# Review package: ${base}..${head}"
+  if [ ${#paths[@]} -gt 0 ]; then
+    echo "# Scoped to: ${paths[*]}"
+  fi
   echo
   echo "## Commits"
-  git log --oneline "${base}..${head}"
+  git_range log --oneline
   echo
   echo "## Files changed"
-  git diff --stat "${base}..${head}"
+  git_range diff --stat
   echo
   echo "## Diff"
-  git diff -U10 "${base}..${head}"
+  git_range diff -U10
 } > "$out"
 
-commits=$(git rev-list --count "${base}..${head}")
+commits=$(git_range rev-list --count)
 echo "wrote ${out}: ${commits} commit(s), $(wc -c < "$out" | tr -d ' ') bytes"

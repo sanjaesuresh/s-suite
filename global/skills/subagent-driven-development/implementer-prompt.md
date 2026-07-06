@@ -47,6 +47,25 @@ Subagent (general-purpose):
     While iterating, run the focused test for what you're changing; run the
     full suite once before committing, not after every edit.
 
+    ## File Boundary
+
+    [CONTROLLER: include this section ONLY when dispatching as part of a
+    parallel wave; delete it for solo dispatches.]
+
+    Other implementer subagents are working in this same checkout right
+    now, on different files. To keep your work and theirs intact:
+
+    - Create or modify ONLY these files: [FILE_LIST]
+    - Stage by explicit path: `git add <file> <file>`. Never use
+      `git add -A`, `git add .`, or `git commit -a` — they would sweep a
+      sibling's in-progress changes into your commit.
+    - If `git commit` fails on index.lock, another subagent is committing;
+      wait a moment and retry.
+    - Expect unrelated files in `git status` and unrelated commits
+      appearing on the branch — ignore them; they are your siblings' work.
+    - If the task turns out to require changing a file NOT in your list,
+      STOP — do not touch it. Report NEEDS_CONTEXT naming the file and why.
+
     ## Code Organization
 
     You reason best about code you can hold in context at once, and your edits are more
