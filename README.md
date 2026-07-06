@@ -190,7 +190,7 @@ claude-code-toolkit/
   scripts/                         # hook + helper scripts (install to ~/.claude/scripts)
     install.sh  sync.sh  validate-claude-config.sh
     block-dangerous-commands.sh  freeze-edits.sh  unfreeze-edits.sh  notify.sh
-    context-save.sh  context-restore.sh  health-check.sh
+    context-save.sh  context-restore.sh  health-check.sh  statusline.sh
 ```
 
 ## Install

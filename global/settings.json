@@ -3,6 +3,10 @@
   "autoCompactEnabled": true,
   "maxSkillDescriptionChars": 300,
   "skillListingBudgetFraction": 0.1,
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/scripts/statusline.sh\""
+  },
   "enabledPlugins": {
     "superpowers@claude-plugins-official": false
   },
