@@ -13,6 +13,16 @@ These are my durable, cross-project instructions. A project's own
 - Respect existing code style, naming, and patterns in the file you are editing.
 - Treat completion claims as evidence-gated: a task is DONE only when verified.
   When unsure between DONE and UNVERIFIABLE, say UNVERIFIABLE.
+- **After implementing, give a change summary.** When a change is done, report
+  in plain English what changed and why, and the files touched — the behavior
+  that's now different, not a replay of the diff. Keep it short and separate
+  from what you verified.
+- **Comment new implementation and important logic.** Add a comment when you
+  write new implementation or new/important logic; explain WHY (intent, gotcha,
+  edge case, ordering constraint, security-sensitive step), never restate WHAT
+  the code already says. Usually one line, all lowercase, plain English. No
+  decorative section headers, no emojis, no comment on every trivial line.
+  Inherit the surrounding file's density.
 
 ## Planning gate (NON-NEGOTIABLE)
 

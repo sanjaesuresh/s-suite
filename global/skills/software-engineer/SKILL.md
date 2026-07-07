@@ -59,6 +59,11 @@ You can still call those from inside this loop — this skill just sequences the
 - Where tests exist or the behavior is testable, write the test first (or
   alongside) and watch it fail, then make it pass. Don't write tests that pass
   even when the implementation is wrong.
+- Comment new implementation and new or important logic — explain WHY (intent,
+  gotcha, edge case, ordering constraint, security-sensitive step), never
+  restate WHAT the code already says. Usually one line, all lowercase, plain
+  English. No decorative section headers, no emojis, no per-line narration;
+  match the file's existing comment density.
 - If you're working in a narrow area and want a guardrail against stray edits,
   use [[freeze]]. For risky environments, [[guard]].
 
@@ -77,9 +82,12 @@ You can still call those from inside this loop — this skill just sequences the
 - If it flags a specialist follow-up (security, tests, architecture, scope),
   run that agent. For a heavier pass, `/deep-codebase-audit current diff`.
 
-### 6. Report honestly
-State what you did, what you verified (with the commands/results), what's still
-unverified, and any risks. Then stop — don't expand scope on your own.
+### 6. Report honestly — with a change summary
+Close with a short **change summary** in plain English: what changed and why,
+and the files touched — the behavior that's now different, not a replay of the
+diff. Keep it separate from verification: state what you verified (with the
+commands/results), what's still unverified, and any risks. Then stop — don't
+expand scope on your own.
 
 ## Discipline (non-negotiable)
 
