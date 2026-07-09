@@ -77,44 +77,29 @@ and plan first. When in doubt, plan.
 
 ### Routing between overlapping skills
 
-When more than one skill could fire, these win:
+Each skill's own description says what it does; this is only the tie-break when
+more than one could fire.
 
-- **Build a feature / fix a bug (default):** `software-engineer`. It already
-  bakes in test-first and verify-before-done — do **not** invoke
-  `test-driven-development` or `verification-before-completion` separately
-  (both are off).
-- **Build or change web UI (component, page, dashboard, landing page):**
-  `frontend-engineer`, not `software-engineer`. It adds the browser gates the
-  generic loop lacks — a deliberate not-AI-looking design, WCAG 2.2 a11y, Core
-  Web Vitals, and every-state coverage. Use `frontend-design` / `impeccable`
-  (both external plugins — not bundled in this toolkit) only for open-ended
-  *creative* direction, then return to `frontend-engineer` to build it. For a
-  review-only de-slop audit, run `frontend-engineer`'s bundled `devibe_scan.py`
-  (or the standalone `unslop-ui` skill if you have it installed).
-- **Execute a plan:**
-  - *Approved written plan, subagents available (default):* `subagent-driven-development` — dispatches a fresh implementer subagent per task, per-task spec and quality reviews, groups independent tasks into parallel waves.
-  - *Approved written plan, no Agent tool / separate session:* `executing-plans` — executes the plan inline without subagent dispatch; the skill itself defers to `subagent-driven-development` when agents are available.
-  - *No written plan, 2+ independent problems to investigate:* `dispatching-parallel-agents` — ad-hoc parallel fan-out for unrelated failures or independent domains; not a substitute for a plan executor on a real plan.
-- **Write a multi-step plan artifact:** `writing-plans`. Not `implementation-plan`
-  or `spec` (both off) — invoke `spec` only when "definition of done" is the hard
-  part; you rarely need spec *and* a plan.
-- **Start ticket/feature work:** `kickoff` (investigate, scope, branch), then `writing-plans`.
-- **Work a Jira ticket end to end:** `jira-ticket` — fetches the ticket via the Atlassian MCP (or asks to connect / paste), keeps a per-ticket doc in an already-gitignored folder, always plans (Opus), then delegates the build to `software-engineer` (Sonnet) and runs tests. Use over `kickoff` when the work has a Jira key and MCP access; `kickoff` stays the no-API/paste front door.
-- **Debug a root cause:** `systematic-debugging` (not `debugging-incident-review`, off).
-- **Is the PR green / fix failing CI:** `ci-watch` — checks per-job CI status, tails failing logs, and proposes (not auto-applies) a fix; ask-first gate for any rerun or push.
-- **Ship:** `pre-pr-review` → `ci-watch` (if CI is red) → `finishing-a-development-branch` → `pr-description`.
-- **Release / changelog / version bump:** `release` — collects real commits since the last tag, drafts a Keep-a-Changelog entry, recommends a semver bump, gates on `release-manager`, and creates the tag only after explicit approval. Never pushes.
-- **Review a plan before coding:**
-  - *Implementation plan (architecture, risks, edge cases):* `engineering-plan-review`.
-  - *Frontend or UX plan:* `design-plan-review`.
-  - *Product idea or feature proposal:* `product-plan-review` (off by default — enable in settings.json skillOverrides to auto-use, or invoke explicitly).
-  - *All angles at once (engineering + design + scope in one pass):* `plan-pipeline`.
-- **Audit, analyze, or research:**
-  - *Deep codebase audit (architecture quality, dead code, structural debt):* `deep-codebase-audit` (off by default — enable in settings.json skillOverrides to auto-use, or invoke explicitly).
-  - *Project health (lint, tests, types, dependencies):* `health-check`.
-  - *Plan a refactor safely (define the test safety net and commit sequence first):* `safe-refactor-plan`.
-  - *Multi-source research on any topic:* `researcher`.
-  - *Learn how a specific part of this codebase actually works:* `learn-codebase`.
+- **Build / fix (default):** `software-engineer` — already bakes in test-first and
+  verify-before-done, so don't invoke `test-driven-development` or
+  `verification-before-completion` separately (both off).
+- **Web UI:** `frontend-engineer`, not `software-engineer` (adds a11y / Core Web
+  Vitals / every-state gates). `frontend-design` / `impeccable` (external) for
+  open-ended creative direction only, then build with `frontend-engineer`.
+- **Execute a plan:** `subagent-driven-development` (agents available — default);
+  `executing-plans` (no Agent tool / separate session); `dispatching-parallel-agents`
+  (ad-hoc fan-out, no written plan).
+- **Plan artifact:** `writing-plans`, not `implementation-plan` / `spec` (both off;
+  use `spec` only when "definition of done" is the hard part).
+- **New work:** `jira-ticket` when it has a Jira key + MCP access; else `kickoff`
+  (the no-API / paste front door) → then `writing-plans`.
+- **Debug a root cause:** `systematic-debugging`.
+- **CI red:** `ci-watch`. **Ship:** `pre-pr-review` → `ci-watch` →
+  `finishing-a-development-branch` → `pr-description`. **Release:** `release`.
+- **Review a plan:** `engineering-plan-review` (eng), `design-plan-review` (UX),
+  `plan-pipeline` (all angles at once).
+- **Analyze:** `health-check`, `safe-refactor-plan`, `researcher`, `learn-codebase`,
+  `deep-codebase-audit` (off).
 
 ## Conserve context — delegate exploration to subagents
 

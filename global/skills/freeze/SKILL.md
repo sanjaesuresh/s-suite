@@ -32,7 +32,7 @@ Lock editing to a single directory (or path prefix) for this session. Any
 3. Confirm to the user:
    - the exact boundary now in force,
    - that edits outside it will be denied,
-   - how to lift it (`/unfreeze` or `bash ~/.claude/scripts/unfreeze-edits.sh`).
+   - how to lift it (`bash ~/.claude/scripts/unfreeze-edits.sh`).
 
 ## Honest limitation (say this to the user)
 
@@ -42,7 +42,7 @@ files anywhere. For destructive-command protection too, use [[guard]].
 
 ## To lift the freeze
 
-Run `/unfreeze`, or:
+Run:
 
 ```bash
 bash ~/.claude/scripts/unfreeze-edits.sh

@@ -1,6 +1,6 @@
 ---
 name: kickoff
-description: Start a new piece of work the right way — from a work ticket (e.g. Jira) or a side-project feature. Creates a branch from ticket info when it's work, investigates the codebase to answer its own questions, asks ONLY the decision-altering questions (with pros/cons), then produces a scoped plan before any code. Use when the user pastes a ticket, says "kickoff", "new ticket", "start work on X", "I'm picking up TICKET-123", or "plan this feature".
+description: Start new work right — from a work ticket or a side-project feature. Branches from ticket info, investigates the codebase, asks only the decision-altering questions, then produces a scoped plan. Use when the user pastes a ticket, says "kickoff", "start work on X", or "plan this feature".
 argument-hint: <ticket id/text, or feature description>
 ---
 

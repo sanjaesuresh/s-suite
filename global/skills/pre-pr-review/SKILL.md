@@ -1,6 +1,6 @@
 ---
 name: pre-pr-review
-description: Strict, skeptical pre-PR code review of the current diff. Checks task completion, scope creep, AI slop, correctness, tests, security, and PR readiness — read-only by default. Use when the user says "pre-pr review", "review my diff", "is this ready to PR", "check before I commit", or before opening a pull request.
+description: Strict, skeptical pre-PR review of the current diff — task completion, scope creep, AI slop, correctness, tests, security, PR readiness. Read-only by default. Use when the user says "pre-pr review", "review my diff", "is this ready to PR", "check before I commit", or before opening a PR.
 ---
 
 # pre-pr-review

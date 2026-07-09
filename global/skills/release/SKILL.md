@@ -1,11 +1,10 @@
 ---
 name: release
 description: >
-  Git-grounded release and changelog skill. Use when cutting a release,
-  writing a changelog, bumping the version, drafting release notes, or
-  tagging a version. Collects real commits from git log since the last
-  release tag — never fabricates history. Does NOT push or create a tag
-  without explicit confirmation.
+  Git-grounded release/changelog skill. Use when cutting a release, writing a
+  changelog, bumping the version, drafting release notes, or tagging. Collects
+  real commits from git log since the last tag — never fabricates history. Does
+  NOT push or create a tag without explicit confirmation.
 ---
 
 ## Tool contract — ASK FIRST BEFORE TAG OR PUSH

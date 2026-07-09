@@ -1,6 +1,6 @@
 ---
 name: learn-codebase
-description: Deeply investigate a specific part of THIS codebase and teach how it actually works, from real files and call flows — not textbook generalities. Use when the user says "teach me how this works", "explain this part", "how does X work here", "walk me through this feature", "where is X implemented", or "learn codebase: <topic>".
+description: Investigate a specific part of THIS codebase and teach how it actually works, from real files and call flows — not textbook generalities. Use when the user says "teach me how this works", "explain this part", "how does X work here", "walk me through this feature", or "where is X implemented".
 ---
 
 # learn-codebase

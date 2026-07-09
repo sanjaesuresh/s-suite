@@ -61,6 +61,63 @@ else
   warn "no skills/ dir at $SKILLS_ROOT"
 fi
 
+# Enabled skill descriptions must fit maxSkillDescriptionChars — the routing list
+# hard-truncates longer ones, silently dropping trigger phrases. Needs python3.
+if [ -d "$SKILLS_ROOT" ] && [ -f "$TARGET/settings.json" ] && command -v python3 >/dev/null 2>&1; then
+  over="$(python3 - "$SKILLS_ROOT" "$TARGET/settings.json" <<'PY'
+import sys, os, re, glob, json
+root, settings = sys.argv[1], sys.argv[2]
+try:
+    cfg = json.load(open(settings))
+except Exception:
+    sys.exit(0)
+cap = int(cfg.get("maxSkillDescriptionChars", 300))
+off = {k for k, v in (cfg.get("skillOverrides") or {}).items() if v == "off"}
+def fold(fm):
+    lines = fm.split("\n")
+    for i, l in enumerate(lines):
+        m = re.match(r'^description:\s*(.*)$', l)
+        if not m:
+            continue
+        rest = m.group(1).strip()
+        if rest[:1] in (">", "|"):  # block scalar: gather more-indented lines
+            body, base = [], None
+            for nl in lines[i+1:]:
+                if not nl.strip():
+                    continue
+                ind = len(nl) - len(nl.lstrip())
+                if base is None:
+                    base = ind
+                if ind < base:
+                    break
+                body.append(nl.strip())
+            return " ".join(body)
+        return rest.strip(chr(34) + chr(39))
+    return ""
+for d in sorted(glob.glob(os.path.join(root, "*/"))):
+    name = os.path.basename(d.rstrip("/"))
+    if name in off:
+        continue
+    sm = os.path.join(d, "SKILL.md")
+    if not os.path.isfile(sm):
+        continue
+    mm = re.match(r'^---\n(.*?)\n---', open(sm).read(), re.S)
+    if not mm:
+        continue
+    dlen = len(re.sub(r'\s+', ' ', fold(mm.group(1))).strip())
+    if dlen > cap:
+        print(f"{name}:{dlen}:{cap}")
+PY
+)"
+  if [ -n "$over" ]; then
+    while IFS=: read -r sname slen scap; do
+      [ -n "$sname" ] && warn "skill $sname: description $slen chars > $scap cap (routing list truncates it)"
+    done <<< "$over"
+  else
+    ok "enabled skill descriptions within cap"
+  fi
+fi
+
 # Each agent needs name + description frontmatter.
 if [ -d "$AGENTS_ROOT" ]; then
   count=0

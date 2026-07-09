@@ -1,10 +1,10 @@
 ---
 name: docs-generate
 description: >
-  Generate or update documentation from actual code. Use when you need to write a
-  tutorial, how-to guide, API reference, or conceptual explanation for a module,
-  function, or feature. Infers the Diataxis type from context, or ask if ambiguous.
-  MAY write doc files when explicitly asked; warns before persisting any sensitive content.
+  Generate or update documentation from actual code — tutorial, how-to, API
+  reference, or conceptual explanation for a module, function, or feature. Infers
+  the Diataxis type from context, or asks if ambiguous. MAY write doc files when
+  explicitly asked; warns before persisting sensitive content.
 argument-hint: "[path | function | feature] [tutorial|how-to|reference|explanation]"
 ---
 

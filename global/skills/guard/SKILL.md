@@ -26,7 +26,7 @@ Engage both safety postures at once for high-stakes work.
 3. Confirm to the user, in one short summary:
    - the active edit boundary,
    - that destructive shell commands will require confirmation,
-   - how to lift it: `/unfreeze` (drops the edit lock); the careful posture
+   - how to lift it: `bash ~/.claude/scripts/unfreeze-edits.sh` (drops the edit lock); the careful posture
      relaxes when the session ends or when the user says so.
 
 ## Behavioral contract while guarded

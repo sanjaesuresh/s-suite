@@ -2,10 +2,9 @@
 name: ci-watch
 description: >
   Check CI status for the current PR, tail failing job logs, and propose (not
-  auto-apply) a fix. Use when the user says "check CI", "is the PR green",
-  "CI failing", "fix failing CI", "watch the build", or "why is CI red".
-  Read-only by default — proposes fixes and asks before running any state-changing
-  action (rerun, push).
+  auto-apply) a fix. Use for "check CI", "is the PR green", "CI failing", "fix
+  failing CI", "watch the build", "why is CI red". Read-only by default — asks
+  before any state-changing action (rerun, push).
 ---
 
 ## Tool contract — READ-ONLY by default

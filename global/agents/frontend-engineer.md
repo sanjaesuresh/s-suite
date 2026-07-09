@@ -1,6 +1,6 @@
 ---
 name: frontend-engineer
-description: Delegatable implementer for a well-scoped frontend build or fix — a UI component, page, dashboard, or landing page. Dispatch this when you want browser-facing work carried out end to end with production discipline: a deliberate, not-AI-looking design, accessible and keyboard-operable, fast (Core Web Vitals), and correct in its empty/loading/error/overflow states — without expanding scope. The frontend counterpart to software-engineer. Not for backend-only work, open-ended creative direction, or product decisions.
+description: Delegatable implementer for a well-scoped frontend build or fix — UI component, page, dashboard, or landing page — carried out end to end with production discipline (not-AI-looking design, accessible, fast Core Web Vitals, every state correct). The frontend counterpart to software-engineer. Not for backend-only work or open-ended creative direction.
 tools: Read, Grep, Glob, Edit, Write, Bash
 model: sonnet
 ---

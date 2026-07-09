@@ -52,7 +52,7 @@ case "$abs/" in
   "$boundary"*) exit 0 ;;
 esac
 
-reason="FROZEN: edits are restricted to ${boundary}. '${abs}' is outside the boundary. To allow it, run /unfreeze (or edit .claude/session-state/freeze-boundary)."
+reason="FROZEN: edits are restricted to ${boundary}. '${abs}' is outside the boundary. To allow it, run: bash ~/.claude/scripts/unfreeze-edits.sh (or edit .claude/session-state/freeze-boundary)."
 if command -v jq >/dev/null 2>&1; then
   jq -nc --arg r "$reason" '{
     hookSpecificOutput: {

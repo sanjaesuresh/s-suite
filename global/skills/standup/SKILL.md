@@ -1,12 +1,10 @@
 ---
 name: standup
 description: >
-  Turn recent repo activity into a short, human-sounding script you can say in a
-  live standup. Mines this repo's git history (your own commits), GitHub PRs and
-  issues, and code blocker signals over a recent window, then drafts a casual
-  first-person Yesterday / Today / Blockers update — not a changelog. Use when
-  the user says "standup", "standup script", "what do I say in standup", or
-  "daily update". Read-only.
+  Turn recent repo activity into a short, human-sounding standup script. Mines
+  your git commits, GitHub PRs/issues, and blocker signals, then drafts a casual
+  first-person Yesterday/Today/Blockers update — not a changelog. Use for
+  "standup", "what do I say in standup", "daily update". Read-only.
 ---
 
 ## Tool contract — READ-ONLY

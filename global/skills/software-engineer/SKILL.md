@@ -1,6 +1,6 @@
 ---
 name: software-engineer
-description: The default disciplined engineering loop for building a feature or fixing a bug — understand, plan, implement in small steps, verify with evidence, self-review before declaring done. Use when the user asks to implement, build, add, fix, change, or refactor something and no more specific skill clearly fits. This is the everyday "do the work well" workflow.
+description: The default disciplined loop for building a feature or fixing a bug — understand, plan, implement in small steps, verify with evidence, self-review before declaring done. Use when asked to implement, build, add, fix, change, or refactor and no more specific skill fits.
 ---
 
 # software-engineer

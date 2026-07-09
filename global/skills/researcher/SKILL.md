@@ -1,14 +1,10 @@
 ---
 name: researcher
 description: >
-  Deep, multi-source, fact-checked research on any topic. Fans out parallel
-  research workers, adversarially verifies the load-bearing claims, then
-  synthesizes a cited report with a confidence/gaps section. Use when the user
-  wants a researched, sourced answer — "research X", "find out about X", "what's
-  the state of X", a buying/decision question, or a literature/landscape scan.
-  BEFORE researching, if the question is underspecified (missing budget, region,
-  timeframe, use-case, or scope), ask 2–3 clarifying questions and weave the
-  answers in. NOT for questions about THIS codebase — use /learn-codebase.
+  Deep, multi-source, fact-checked research: parallel workers, adversarially
+  verified claims, a cited report with a gaps section. Use for
+  "research X", "state of X", buying/decision or landscape questions. Asks 2–3
+  clarifying Qs if underspecified. NOT for THIS codebase — use /learn-codebase.
 argument-hint: "[--quick | --deep] <question>"
 ---
 

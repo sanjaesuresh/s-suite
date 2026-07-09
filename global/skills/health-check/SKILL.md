@@ -1,11 +1,10 @@
 ---
 name: health-check
 description: >
-  Run or propose project health checks: lint, typecheck, unit tests, integration
-  tests, build, formatting, dead code, dependency risk, flaky tests, and basic
-  security checks. Use when you want a quick "is this project in good shape?" answer,
-  before a release, or after inheriting a codebase. Runs checks if possible;
-  proposes them if the environment doesn't support execution.
+  Run or propose project health checks — lint, typecheck, unit/integration tests,
+  build, formatting, dead code, dependency risk, flaky tests, basic security. Use
+  for a quick "is this project in good shape?", before a release, or after
+  inheriting a codebase. Runs if possible, else proposes.
 ---
 
 ## Tool contract — READ-ONLY

@@ -1,10 +1,10 @@
 ---
 name: safe-refactor-plan
 description: >
-  Plan a refactor safely: preserve existing behavior, identify tests needed before
-  touching code, split work into small reviewable commits, and define a rollback path.
-  Use before any refactor larger than renaming a variable — especially when refactoring
-  untested code, changing interfaces, or reorganizing module boundaries.
+  Plan a refactor safely — preserve behavior, identify tests needed before touching
+  code, split into small reviewable commits, define a rollback path. Use before any
+  refactor larger than a rename, especially when refactoring untested code, changing
+  interfaces, or reorganizing modules.
 argument-hint: "[what to refactor — file, module, or description]"
 ---
 

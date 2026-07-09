@@ -1,6 +1,6 @@
 ---
 name: plan-pipeline
-description: Run a plan through several specialist reviews in one pass — engineering, design, and scope — auto-deciding the routine calls and surfacing only the real judgment calls at a single approval gate. Use when the user says "plan pipeline", "full plan review", "review this plan from all angles", or has a non-trivial implementation plan ready and wants it stress-tested before coding.
+description: Run a plan through engineering, design, and scope reviews in one pass — auto-deciding routine calls, surfacing only real judgment calls at a single approval gate. Use for "plan pipeline", "full plan review", "review this plan from all angles", or a non-trivial plan to stress-test before coding.
 ---
 
 # plan-pipeline

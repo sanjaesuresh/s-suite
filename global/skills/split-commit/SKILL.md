@@ -1,13 +1,10 @@
 ---
 name: split-commit
 description: >
-  Review the working tree and split it into several focused, logically-separate
-  git commits — one per feature / fix / refactor / docs / chore — instead of one
-  catch-all commit. Proposes the grouping and waits for approval before
-  committing. Use when the user says "split this into commits", "commit these
-  changes separately", "/split-commit", or has a mixed batch of changes that
-  should not land as a single commit. Commits only — never pushes, branches, or
-  opens a PR.
+  Split the working tree into focused, logically-separate commits — one per
+  feature/fix/refactor/docs/chore, not one catch-all. Proposes the grouping,
+  waits for approval. Use for "split into commits", "commit these separately",
+  "/split-commit". Commits only — never pushes or branches.
 ---
 
 ## Tool contract

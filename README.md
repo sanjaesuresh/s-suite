@@ -28,7 +28,7 @@ written so Claude auto-invokes the right one.
 > `subagent-driven-development`) and not separately listed. They're not deleted —
 > flip any back on under `skillOverrides` (`"spec": "on"`) when you want them.
 
-## Skills (42)
+## Skills (43)
 
 **Plan & scope**
 
@@ -173,7 +173,7 @@ checks, and Diataxis docs.
 This toolkit **does not depend on gstack** and does not clone it. It is simpler,
 private, and hardened for work use:
 
-- 42 skills + 19 agents, all plain markdown — no external binaries, no telemetry,
+- 43 skills + 19 agents, all plain markdown — no external binaries, no telemetry,
   no analytics directory, no required browser automation.
 - Every reusable file is generic; nothing proprietary is ever persisted globally.
 - Safety hooks are minimal and "careful, not annoying" (confirm, don't block).
@@ -190,7 +190,7 @@ s.suite/
   global/                          # installs into ~/.claude
     CLAUDE.md                      # global operating instructions
     settings.json                  # safe starter settings + hooks
-    skills/<name>/SKILL.md         # 42 reusable skills (+ process skills)
+    skills/<name>/SKILL.md         # 43 reusable skills (+ process skills)
     agents/<name>.md               # 19 reusable subagents
   templates/                       # examples to copy into real repos
     project-claude.md              # example project CLAUDE.md
@@ -204,7 +204,7 @@ s.suite/
     context-save.sh  context-restore.sh  health-check.sh  statusline.sh
 ```
 
-`scripts/statusline.sh` renders the Claude Code status bar: active model name, context window usage (%), cumulative session cost in USD, and session duration (e.g. `[claude-sonnet-4-5] 42% context | $0.18 | 12m`).
+`scripts/statusline.sh` renders the Claude Code status bar: active model name, context window usage (%), cumulative session cost in USD, and session duration (e.g. `[Opus 4.8] 42% context | $0.18 | 12m`).
 
 ## Install
 

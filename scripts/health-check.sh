@@ -13,13 +13,16 @@
 set -uo pipefail
 
 pass=0; fail=0; skip=0
+# per-run temp file (not a fixed /tmp name) to avoid cross-run collisions and symlink clobber
+HC_OUT="$(mktemp "${TMPDIR:-/tmp}/healthcheck.XXXXXX")"
+trap 'rm -f "$HC_OUT"' EXIT
 run() { # run "<label>" "<command...>"
   label="$1"; shift
-  if "$@" >/tmp/healthcheck.out 2>&1; then
+  if "$@" >"$HC_OUT" 2>&1; then
     echo "PASS  $label"; pass=$((pass+1))
   else
     echo "FAIL  $label  (see output below)"; fail=$((fail+1))
-    sed 's/^/      /' /tmp/healthcheck.out | tail -n 15
+    sed 's/^/      /' "$HC_OUT" | tail -n 15
   fi
 }
 skipmsg() { echo "SKIP  $1"; skip=$((skip+1)); }

@@ -1,15 +1,10 @@
 ---
 name: frontend-engineer
 description: >-
-  The disciplined build/fix loop for frontend work — UI components, pages, web apps,
-  dashboards, landing pages. Like software-engineer, but specialized for the browser: it
-  bakes in not-AI-looking design (reference-first brief + the vibe-coded-tells catalog and
-  a CI scanner) AND production-grade engineering gates (WCAG 2.2 AA accessibility, Core Web
-  Vitals / INP performance, every-state coverage, semantic HTML, forms UX, responsive,
-  design tokens, testing). Use whenever you are building, styling, or changing any web UI
-  and want it to look human-made and hold up in production — not just render in a demo.
-  Trigger on "build a page/component/dashboard/landing page", "make this UI", "frontend",
-  "doesn't look AI-generated", "production-grade UI".
+  Disciplined build/fix loop for web UI — components, pages, dashboards, landing
+  pages. Bakes in not-AI-looking design, WCAG 2.2 a11y, Core Web Vitals, and
+  every-state coverage. Use for "build a page/component/dashboard", "make this UI",
+  "frontend", "doesn't look AI-generated", "production-grade UI".
 ---
 
 # frontend-engineer

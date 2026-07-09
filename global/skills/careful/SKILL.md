@@ -1,6 +1,6 @@
 ---
 name: careful
-description: Activate a careful safety posture for this session — warn and require confirmation before destructive or secret-exfiltrating shell commands (rm -rf, git reset --hard, force-push, DROP, kubectl delete, curl | sh, ...). Use when the user says "careful", "be careful", "safety on", "I'm near production", or before risky operations.
+description: Activate a careful safety posture — warn and require confirmation before destructive or secret-exfiltrating shell commands (rm -rf, git reset --hard, force-push, DROP, kubectl delete, curl | sh). Use when the user says "careful", "safety on", "I'm near production", or before risky operations.
 ---
 
 # careful
