@@ -1,11 +1,12 @@
 ---
 name: push-it
 description: >
-  Thin release orchestrator — get the current branch committed, pushed, and PR'd.
-  Sequences existing skills and the release-manager agent rather than
-  reimplementing them: commit → branch hygiene → push → open PR, asking before
-  every irreversible step. Use for "push it", "ship this branch", "commit push
-  and PR". Does NOT watch CI, tag, or merge.
+  Thin branch-to-PR orchestrator: get the current branch committed, pushed, and
+  opened as a PR. Sequences existing skills and the release-manager agent rather
+  than reimplementing them: commit → branch hygiene → push → open PR, asking
+  before every irreversible step. Use for "push it", "ship this branch", "commit
+  push and PR". Not a release/versioning skill (that's `release`, which does
+  changelog + tag); does not watch CI, tag, or merge.
 ---
 
 # push-it

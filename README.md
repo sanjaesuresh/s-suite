@@ -88,7 +88,7 @@ written so Claude auto-invokes the right one.
 | `/pr-description` | Generate a PR description grounded in the real diff + validation performed. |
 | `/ci-watch` | Check CI status for the current PR, tail failing job logs, and propose (not auto-apply) a fix — read-only by default. |
 | `/release` | Collect real commits from git log since the last tag, draft a changelog and semver bump, then propose a tag — nothing pushed without explicit confirmation. |
-| `/push-it` | Thin release orchestrator: commit → branch hygiene → push → open PR. Confirms before every commit and every push (hard-gated — no step auto-fires) and gates readiness on the `release-manager` agent. Delegates to `split-commit` / `pr-description`; does not watch CI, tag, or merge. |
+| `/push-it` | Thin branch-to-PR orchestrator: commit → branch hygiene → push → open PR. Confirms before every commit and every push (hard-gated — no step auto-fires) and gates readiness on the `release-manager` agent. Delegates to `split-commit` / `pr-description`; does not watch CI, tag, or merge. |
 | `/standup` | Mine recent git, PRs, and blocker signals into a short, human-sounding Yesterday/Today/Blockers script to say in standup. |
 
 **Debug & refactor**
